@@ -5,6 +5,8 @@ import { createUINode } from '../../Utils/indext';
 import Levels, { ILevel } from '../../Level';
 import DataManager from '../../Runtime/DataManager';
 import { TILE_WIDTH } from '../Tile/TileManager';
+import EventManager from '../../Runtime/EventManager';
+import { EVENT_ENUM } from '../../Enums';
 const { ccclass, property } = _decorator;
 
 
@@ -14,20 +16,38 @@ export class BattleManager extends Component {
     level:ILevel;
     stage:Node;
 
+    onLoad () {
+        EventManager.Instance.on(EVENT_ENUM.NEXT_LEVEL, this.nextLevel, this);//绑定事件(事件名称、回调函数、上下文)
+    }
+    onDestroy () {
+        EventManager.Instance.off(EVENT_ENUM.NEXT_LEVEL, this.nextLevel);//解绑事件
+    }
+
     start () {
         this.generateStage();
         this.initLevel();
     }
 
     initLevel() {
-        const level = Levels[`level${1}`];
+        const level = Levels[`level${DataManager.Instance.levelIndex}`];
         if (level) {
+            this.clearLevel();
             this.level = level;
             DataManager.Instance.mapInfo = this.level.mapInfo;
             DataManager.Instance.mapRowCount = this.level.mapInfo.length || 0;
             DataManager.Instance.mapColumnCount = this.level.mapInfo[0].length || 0;
             this.generateTileMap();
         }
+    }
+
+    nextLevel() {
+        DataManager.Instance.levelIndex++;
+        this.initLevel();
+    }
+
+    clearLevel() {
+        this.stage.destroyAllChildren();
+        DataManager.Instance.reset();
     }
 
     generateStage() {

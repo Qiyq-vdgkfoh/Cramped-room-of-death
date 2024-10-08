@@ -1,9 +1,11 @@
 import { TILE_TYPE_ENUM } from "../Enums"
 import level1 from "./level1"
+import level2 from "./level2"
 
 
 const Levels: Record<string, ILevel> = {
-  level1
+  level1,
+  level2,
 }
 
 export default Levels
