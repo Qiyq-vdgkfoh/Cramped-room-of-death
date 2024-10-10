@@ -7,6 +7,7 @@ import DataManager from '../../Runtime/DataManager';
 import { TILE_WIDTH } from '../Tile/TileManager';
 import EventManager from '../../Runtime/EventManager';
 import { EVENT_ENUM } from '../../Enums';
+import { PlayerManager } from '../Player/PlayerManager';
 const { ccclass, property } = _decorator;
 
 
@@ -37,6 +38,7 @@ export class BattleManager extends Component {
             DataManager.Instance.mapRowCount = this.level.mapInfo.length || 0;
             DataManager.Instance.mapColumnCount = this.level.mapInfo[0].length || 0;
             this.generateTileMap();
+            this.generatePlayer();
         }
     }
 
@@ -62,6 +64,13 @@ export class BattleManager extends Component {
         tileMapManager.init();
 
         this.adaptPos();
+    }
+
+    generatePlayer() {
+        const player = createUINode();
+        player.setParent(this.stage);
+        const playerManager = player.addComponent(PlayerManager);
+        playerManager.init();
     }
 
     adaptPos() {

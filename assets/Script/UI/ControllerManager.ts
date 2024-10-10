@@ -1,12 +1,12 @@
-import { _decorator, Component } from "cc";
-import { EVENT_ENUM } from "../../Enums";
+import { _decorator, Component, Event } from "cc";
+import { CONTROLLER_ENUM, EVENT_ENUM } from "../../Enums";
 import EventManager from "../../Runtime/EventManager";
 const { ccclass, property } = _decorator;
 
 
 @ccclass('ControllerManager')
 export class ControllerManager extends Component {
-  handleCtrl(){
-    EventManager.Instance.emit(EVENT_ENUM.NEXT_LEVEL);
+  handleCtrl(evt:Event, type: string){
+    EventManager.Instance.emit(EVENT_ENUM.PLAYER_CTRL, type as CONTROLLER_ENUM);
   }
 }
