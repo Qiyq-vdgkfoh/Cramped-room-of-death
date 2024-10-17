@@ -12,10 +12,12 @@ const { ccclass, property } = _decorator;
 export class TileMapManager extends Component {
 
   async init(){
-    const {mapInfo} = DataManager.Instance
+    const {mapInfo} = DataManager.Instance;//从数据中心获取当前地图信息
     const spriteFrames = await ResourceManager.Instance.loadDir('texture/tile/tile');
+    DataManager.Instance.tileInfo = [];//再将地图中各瓦片类型信息存储到数据中心
     for(let i = 0; i < mapInfo.length; i++){
       const column = mapInfo[i];
+      DataManager.Instance.tileInfo[i] = [];
       for(let j = 0; j < column.length; j++){
         const item = column[j];
         if(item.src === null || item.type === null)
@@ -30,10 +32,12 @@ export class TileMapManager extends Component {
           number += randomByRange(0,4);
         }
         const imgSrc = `tile (${number})`;
-        const spriteFrame = spriteFrames.find((v: SpriteFrame) => v.name === imgSrc) || spriteFrames[0];
 
+        const spriteFrame = spriteFrames.find((v: SpriteFrame) => v.name === imgSrc) || spriteFrames[0];
+        const type = item.type;
         const tileManager = node.addComponent(TileManager);
-        tileManager.init(spriteFrame, i, j);
+        tileManager.init(type, spriteFrame, i, j);
+        DataManager.Instance.tileInfo[i][j] = tileManager;
       }
     }
   }

@@ -1,3 +1,4 @@
+import { WoodenSkeletonManager } from './../Enemy/WoodenSkeleton/WoodenSkeletonManager';
 
 import { _decorator, Component, Node } from 'cc';
 import { TileMapManager } from '../Tile/TileMapManager';
@@ -34,11 +35,14 @@ export class BattleManager extends Component {
         if (level) {
             this.clearLevel();
             this.level = level;
+            //将关卡地图信息存储到数据中心
             DataManager.Instance.mapInfo = this.level.mapInfo;
             DataManager.Instance.mapRowCount = this.level.mapInfo.length || 0;
             DataManager.Instance.mapColumnCount = this.level.mapInfo[0].length || 0;
+
             this.generateTileMap();
             this.generatePlayer();
+            this.generateEnemy();
         }
     }
 
@@ -57,20 +61,30 @@ export class BattleManager extends Component {
         this.stage.setParent(this.node);
     }
 
-    generateTileMap() {
+    async generateTileMap() {
         const tileMap = createUINode();
         tileMap.setParent(this.stage);
         const tileMapManager = tileMap.addComponent(TileMapManager);
-        tileMapManager.init();
+        await tileMapManager.init();
 
         this.adaptPos();
     }
 
-    generatePlayer() {
+    async generatePlayer() {
         const player = createUINode();
         player.setParent(this.stage);
         const playerManager = player.addComponent(PlayerManager);
-        playerManager.init();
+        await playerManager.init();
+        DataManager.Instance.player = playerManager;
+        EventManager.Instance.emit(EVENT_ENUM.PLAYER_BORN, true);
+    }
+
+    async generateEnemy() {
+        const enmey = createUINode();
+        enmey.setParent(this.stage);
+        const woodenSkeletonManager = enmey.addComponent(WoodenSkeletonManager);
+        await woodenSkeletonManager.init();
+        DataManager.Instance.enemies.push(woodenSkeletonManager);
     }
 
     adaptPos() {

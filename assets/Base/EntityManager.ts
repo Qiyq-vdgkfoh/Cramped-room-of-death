@@ -5,15 +5,18 @@ import { DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_EN
 import { IEntity } from '../Level';
 import { PlayerStateMachine } from '../Script/Player/PlayerStateMachine';
 import { TILE_HEIGHT, TILE_WIDTH } from '../Script/Tile/TileManager';
+import { StateMachine } from './StateMachine';
+import { randomByLen } from '../Utils/indext';
 const { ccclass, property } = _decorator;
 
 @ccclass('EntityManager')
 export class EntityManager extends Component {
 
+  id: string = randomByLen(12);
   x: number = 0;
   y: number = 0;
-  type: ENTITY_TYPE_ENUM;
-  fsm:PlayerStateMachine;
+  private type: ENTITY_TYPE_ENUM;
+  fsm:StateMachine;
 
   private _direction: DIRECTION_ENUM;
   private _state: ENTITY_STATE_ENUM;
