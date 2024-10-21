@@ -1,8 +1,10 @@
 import { EnemyManager } from "../Base/EnemyManager";
 import Singleton from "../Base/Singleton";
 import { ITile } from "../Level";
+import { BurstManager } from "../Script/Burst/BurstManager";
 import { DoorManager } from "../Script/Door/DoorManager";
 import { PlayerManager } from "../Script/Player/PlayerManager";
+import { SpikesManager } from "../Script/Spikes/SpikesManager";
 import { TileManager } from "../Script/Tile/TileManager";
 
 //地图数据中心单例
@@ -15,6 +17,8 @@ export default class DataManager extends Singleton {
   tileInfo:Array<Array<TileManager>>;
   levelIndex:number = 1;
   door: DoorManager;
+  bursts: BurstManager[];
+  spikes: SpikesManager[];
   player:PlayerManager;
   enemies: EnemyManager[];
 
@@ -28,6 +32,8 @@ export default class DataManager extends Singleton {
     this.mapColumnCount = 0;
     this.tileInfo = [];
     this.door = null;
+    this.bursts = [];
+    this.spikes = [];
     this.player = null;
     this.enemies = [];
   }

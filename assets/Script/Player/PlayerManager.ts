@@ -8,6 +8,8 @@ import { PlayerStateMachine } from './PlayerStateMachine';
 import { EntityManager } from '../../Base/EntityManager';
 import DataManager from '../../Runtime/DataManager';
 import { IEntity } from '../../Level';
+import { EnemyManager } from '../../Base/EnemyManager';
+import { BurstManager } from '../Burst/BurstManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerManager')
@@ -84,6 +86,7 @@ export class PlayerManager extends EntityManager {
     if(id){
       EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY, id);
       EventManager.Instance.emit(EVENT_ENUM.DOOR_OPEN);
+      EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END);
       return;
     }
 
@@ -142,7 +145,8 @@ export class PlayerManager extends EntityManager {
     const {targetX:x, targetY:y, direction} = this;
     const {tileInfo} = DataManager.Instance;
     const {x:doorX, y:doorY, state:doorState} = DataManager.Instance.door;
-    const enemies = DataManager.Instance.enemies.filter((enemy) => enemy.state !== ENTITY_STATE_ENUM.DEATH);
+    const enemies: EnemyManager[] = DataManager.Instance.enemies.filter((enemy) => enemy.state !== ENTITY_STATE_ENUM.DEATH);
+    const bursts: BurstManager[] = DataManager.Instance.bursts.filter((burst) => burst.state !== ENTITY_STATE_ENUM.DEATH);
 
     let palyerNextX = x, palyerNextY = y;
     let weaponNextX, weaponNextY;
@@ -195,8 +199,18 @@ export class PlayerManager extends EntityManager {
           return true;
         }
       }
+      //在判断地图是否可以移动前先判断其是否的地裂陷阱，地图空缺但地裂陷阱可行走
+      for(let i = 0; i < bursts.length; i++){
+        const {x: burstX, y: burstY} = bursts[i];
+        if(
+          (palyerNextX === burstX && palyerNextY === burstY) &&
+          (!weaponTile || weaponTile.turnable)
+        ){
+          return false;
+        }
+      }
 
-      //判断地图是否碰撞
+      //判断地图是否可移动
       if(playerTile && playerTile.moveable && (!weaponTile || weaponTile.turnable)){
         //如果存在这个瓦片且可走、并且不存在武器瓦片或武器瓦片可转，则不会碰撞
       }else{
@@ -247,6 +261,16 @@ export class PlayerManager extends EntityManager {
         ){
           this.state = ENTITY_STATE_ENUM.BLOCKBACK;
           return true;
+        }
+      }
+
+      for(let i = 0; i < bursts.length; i++){
+        const {x: burstX, y: burstY} = bursts[i];
+        if(
+          (palyerNextX === burstX && palyerNextY === burstY) &&
+          (!weaponTile || weaponTile.turnable)
+        ){
+          return false;
         }
       }
 
@@ -304,6 +328,16 @@ export class PlayerManager extends EntityManager {
         }
       }
 
+      for(let i = 0; i < bursts.length; i++){
+        const {x: burstX, y: burstY} = bursts[i];
+        if(
+          (palyerNextX === burstX && palyerNextY === burstY) &&
+          (!weaponTile || weaponTile.turnable)
+        ){
+          return false;
+        }
+      }
+
       //判断地图是否碰撞
       if(playerTile && playerTile.moveable && (!weaponTile || weaponTile.turnable)){
 
@@ -355,6 +389,16 @@ export class PlayerManager extends EntityManager {
         ){
           this.state = ENTITY_STATE_ENUM.BLOCKRIGHT;
           return true;
+        }
+      }
+
+      for(let i = 0; i < bursts.length; i++){
+        const {x: burstX, y: burstY} = bursts[i];
+        if(
+          (palyerNextX === burstX && palyerNextY === burstY) &&
+          (!weaponTile || weaponTile.turnable)
+        ){
+          return false;
         }
       }
 
