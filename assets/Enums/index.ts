@@ -21,6 +21,7 @@ export enum EVENT_ENUM {
   PLAYER_BORN = "PLAYER_BORN",
   ATTACK_PLAYER = "ATTACK_PLAYER",
   ATTACK_ENEMY = "ATTACK_ENEMY",
+  DOOR_OPEN = "DOOR_OPEN",
 }
 
 //控制按钮类型
@@ -58,7 +59,9 @@ export enum PARAMS_NAME_ENUM {
 //实体类型
 export enum ENTITY_TYPE_ENUM {
   PLAYER = 'PLAYER',
-  ENEMY = 'ENEMY',
+  DOOR = "DOOR",
+  SKELETON_WOODEN = 'SKELETON_WOODEN',
+  SKELETON_IRON = "SKELETON_IRON",
 }
 //实体状态
 export enum ENTITY_STATE_ENUM {

@@ -1,6 +1,7 @@
+import { EnemyManager } from "../Base/EnemyManager";
 import Singleton from "../Base/Singleton";
 import { ITile } from "../Level";
-import { WoodenSkeletonManager } from "../Script/Enemy/WoodenSkeleton/WoodenSkeletonManager";
+import { DoorManager } from "../Script/Door/DoorManager";
 import { PlayerManager } from "../Script/Player/PlayerManager";
 import { TileManager } from "../Script/Tile/TileManager";
 
@@ -13,8 +14,9 @@ export default class DataManager extends Singleton {
   mapColumnCount:number = 0;
   tileInfo:Array<Array<TileManager>>;
   levelIndex:number = 1;
+  door: DoorManager;
   player:PlayerManager;
-  enemies: WoodenSkeletonManager[];
+  enemies: EnemyManager[];
 
   static get Instance() {
     return super.GetInstance<DataManager>();
@@ -25,6 +27,7 @@ export default class DataManager extends Singleton {
     this.mapRowCount = 0;
     this.mapColumnCount = 0;
     this.tileInfo = [];
+    this.door = null;
     this.player = null;
     this.enemies = [];
   }
