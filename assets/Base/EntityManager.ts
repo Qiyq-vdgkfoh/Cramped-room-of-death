@@ -53,6 +53,9 @@ export class EntityManager extends Component {
     this.direction = params.direction;
     this.state = params.state;
   }
+  onDestroy(){
+
+  }
 
   update(){
 

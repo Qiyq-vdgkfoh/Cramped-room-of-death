@@ -86,12 +86,12 @@ export class PlayerManager extends EntityManager {
     if(id){
       EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY, id);
       EventManager.Instance.emit(EVENT_ENUM.DOOR_OPEN);
-      EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END);
+      // EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END);
       return;
     }
 
     if(this.willBlock(inputDirection)){
-      console.log('block');
+      // console.log('block');
       return;
     }
 
@@ -102,15 +102,19 @@ export class PlayerManager extends EntityManager {
     if(inputDirection === CONTROLLER_ENUM.TOP){
       this.targetY -= 1;
       this.ismoving = true;
+      this.showSmoke(CONTROLLER_ENUM.TOP);
     }else if(inputDirection === CONTROLLER_ENUM.BOTTOM){
       this.targetY += 1;
       this.ismoving = true;
+      this.showSmoke(CONTROLLER_ENUM.BOTTOM)
     }else if(inputDirection === CONTROLLER_ENUM.LEFT){
       this.targetX -= 1;
       this.ismoving = true;
+      this.showSmoke(CONTROLLER_ENUM.LEFT)
     }else if(inputDirection === CONTROLLER_ENUM.RIGHT){
       this.targetX += 1;
       this.ismoving = true;
+      this.showSmoke(CONTROLLER_ENUM.RIGHT)
     }else if(inputDirection === CONTROLLER_ENUM.TURNLEFT){
       if(this.direction === DIRECTION_ENUM.TOP){
         this.direction = DIRECTION_ENUM.LEFT;
@@ -121,10 +125,10 @@ export class PlayerManager extends EntityManager {
       }else if(this.direction === DIRECTION_ENUM.RIGHT){
         this.direction = DIRECTION_ENUM.TOP;
       }
-      //this.fsm.setParams(PARAMS_NAME_ENUM.TURNLEFT, true);这里直接设置了UI
+      //this.fsm.setParams(PARAMS_NAME_ENUM.TURNLEFT, true);这里并没留存记录而直接改变了UI
       //数据、UI分离思想：任何操作应当先改变数据，再由数据驱动UI改变(因为有时候需要记录一些数据方便后续其他操作)
       this.state = ENTITY_STATE_ENUM.TURNLEFT;//先改变状态的数据
-      EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END);
+      EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END);//再根据变更后的数据驱动UI进行相应改变
     }else if(inputDirection === CONTROLLER_ENUM.TURNRIGHT){
       if(this.direction === DIRECTION_ENUM.TOP){
         this.direction = DIRECTION_ENUM.RIGHT;
@@ -162,21 +166,21 @@ export class PlayerManager extends EntityManager {
       if(direction === DIRECTION_ENUM.TOP){
         weaponNextY = y - 2;
         playerTile = tileInfo[x][palyerNextY];
-        weaponTile = tileInfo[x][weaponNextY];
+        weaponTile = tileInfo[x]?.[weaponNextY]??'';
       }else if(direction === DIRECTION_ENUM.BOTTOM){
         weaponNextY = y;
         playerTile = tileInfo[x][palyerNextY];
-        weaponTile = tileInfo[x][weaponNextY];
+        weaponTile = tileInfo[x]?.[weaponNextY]??'';
       }else if(direction === DIRECTION_ENUM.LEFT){
         weaponNextX = x - 1;
         weaponNextY = y - 1;
         playerTile = tileInfo[x][palyerNextY];
-        weaponTile = tileInfo[weaponNextX][weaponNextY];
+        weaponTile = tileInfo[weaponNextX]?.[weaponNextY]??'';
       }else if(direction === DIRECTION_ENUM.RIGHT){
         weaponNextX = x + 1;
         weaponNextY = y - 1;
         playerTile = tileInfo[x][palyerNextY];
-        weaponTile = tileInfo[weaponNextX][weaponNextY];
+        weaponTile = tileInfo[weaponNextX]?.[weaponNextY]??'';
       }
 
       //判断与门是否碰撞
@@ -228,21 +232,21 @@ export class PlayerManager extends EntityManager {
       if(direction === DIRECTION_ENUM.TOP){
         weaponNextY = y;
         playerTile = tileInfo[x][palyerNextY];
-        weaponTile = tileInfo[x][weaponNextY];
+        weaponTile = tileInfo[x]?.[weaponNextY]??'';
       }else if(direction === DIRECTION_ENUM.BOTTOM){
         weaponNextY = y + 2;
         playerTile = tileInfo[x][palyerNextY];
-        weaponTile = tileInfo[x][weaponNextY];
+        weaponTile = tileInfo[x]?.[weaponNextY]??'';
       }else if(direction === DIRECTION_ENUM.LEFT){
         weaponNextX = x - 1;
         weaponNextY = y + 1;
         playerTile = tileInfo[x][palyerNextY];
-        weaponTile = tileInfo[weaponNextX][weaponNextY];
+        weaponTile = tileInfo[weaponNextX]?.[weaponNextY]??'';
       }else if(direction === DIRECTION_ENUM.RIGHT){
         weaponNextX = x + 1;
         weaponNextY = y + 1;
         playerTile = tileInfo[x][palyerNextY];
-        weaponTile = tileInfo[weaponNextX][weaponNextY];
+        weaponTile = tileInfo[weaponNextX]?.[weaponNextY]??'';
       }
 
       if(
@@ -293,20 +297,20 @@ export class PlayerManager extends EntityManager {
         weaponNextX = x - 1;
         weaponNextY = y - 1;
         playerTile = tileInfo[palyerNextX][y];
-        weaponTile = tileInfo[weaponNextX][weaponNextY];
+        weaponTile = tileInfo[weaponNextX]?.[weaponNextY]??'';
       }else if(direction === DIRECTION_ENUM.BOTTOM){
         weaponNextX = x - 1;
         weaponNextY = y + 1;
         playerTile = tileInfo[palyerNextX][y];
-        weaponTile = tileInfo[weaponNextX][weaponNextY];
+        weaponTile = tileInfo[weaponNextX]?.[weaponNextY]??'';
       }else if(direction === DIRECTION_ENUM.LEFT){
         weaponNextX = x - 2;
         playerTile = tileInfo[palyerNextX][y];
-        weaponTile = tileInfo[weaponNextX][y];
+        weaponTile = tileInfo[weaponNextX]?.[y]??'';
       }else if(direction === DIRECTION_ENUM.RIGHT){
         weaponNextX = x;
         playerTile = tileInfo[palyerNextX][y];
-        weaponTile = tileInfo[weaponNextX][y];
+        weaponTile = tileInfo[weaponNextX]?.[y]??'';
       }
 
       if(
@@ -357,20 +361,20 @@ export class PlayerManager extends EntityManager {
         weaponNextX = x + 1;
         weaponNextY = y - 1;
         playerTile = tileInfo[palyerNextX][y];
-        weaponTile = tileInfo[weaponNextX][weaponNextY];
+        weaponTile = tileInfo[weaponNextX]?.[weaponNextY]??'';
       }else if(direction === DIRECTION_ENUM.BOTTOM){
         weaponNextX = x + 1;
         weaponNextY = y + 1;
         playerTile = tileInfo[palyerNextX][y];
-        weaponTile = tileInfo[weaponNextX][weaponNextY];
+        weaponTile = tileInfo[weaponNextX]?.[weaponNextY]??'';
       }else if(direction === DIRECTION_ENUM.LEFT){
         weaponNextX = x;
         playerTile = tileInfo[palyerNextX][y];
-        weaponTile = tileInfo[weaponNextX][y];
+        weaponTile = tileInfo[weaponNextX]?.[y]??'';
       }else if(direction === DIRECTION_ENUM.RIGHT){
         weaponNextX = x + 2;
         playerTile = tileInfo[palyerNextX][y];
-        weaponTile = tileInfo[weaponNextX][y];
+        weaponTile = tileInfo[weaponNextX]?.[y]??'';
       }
 
       if(
@@ -551,6 +555,10 @@ export class PlayerManager extends EntityManager {
     }
 
     return '';
+  }
+
+  showSmoke(type: CONTROLLER_ENUM){
+    EventManager.Instance.emit(EVENT_ENUM.SHOW_SMOKE, this.x, this.y, type);
   }
 }
 

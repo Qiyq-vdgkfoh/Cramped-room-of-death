@@ -8,7 +8,7 @@ import ResourceManager from "../Runtime/ResourceManager";
 import { StateMachine } from "./StateMachine";
 import { sortSpriteFrame } from "../Utils/indext";
 
-const ANIMATION_SPEED = 1/8;
+export const ANIMATION_SPEED = 1/8;
 
 export default class State {
 
@@ -17,7 +17,8 @@ export default class State {
   constructor(
     private fsm:StateMachine,
     private path:string,
-    private wrapMode: AnimationClip.WrapMode = AnimationClip.WrapMode.Normal
+    private wrapMode: AnimationClip.WrapMode = AnimationClip.WrapMode.Normal,
+    private speed: number = ANIMATION_SPEED
   ) {
     this.init();
   }
@@ -31,7 +32,7 @@ export default class State {
 
     const track = new animation.ObjectTrack();//创建一个对象轨道
     track.path = new animation.TrackPath().toComponent(Sprite).toProperty('spriteFrame');//指定轨道的路径
-    const frames: Array<[number, SpriteFrame]> = sortSpriteFrame(spriteFrames).map((item, index) => [ANIMATION_SPEED * index, item]);//创建动画帧数据
+    const frames: Array<[number, SpriteFrame]> = sortSpriteFrame(spriteFrames).map((item, index) => [this.speed * index, item]);//创建动画帧数据
     track.channel.curve.assignSorted(frames);//指定轨道的帧数据
 
     this.animationClip.addTrack(track);//将轨道添加到动画剪辑中

@@ -4,6 +4,7 @@ import { ITile } from "../Level";
 import { BurstManager } from "../Script/Burst/BurstManager";
 import { DoorManager } from "../Script/Door/DoorManager";
 import { PlayerManager } from "../Script/Player/PlayerManager";
+import { SmokeManager } from "../Script/Smoke/SmokeManager";
 import { SpikesManager } from "../Script/Spikes/SpikesManager";
 import { TileManager } from "../Script/Tile/TileManager";
 
@@ -21,6 +22,7 @@ export default class DataManager extends Singleton {
   spikes: SpikesManager[];
   player:PlayerManager;
   enemies: EnemyManager[];
+  smokes: SmokeManager[];
 
   static get Instance() {
     return super.GetInstance<DataManager>();
@@ -36,5 +38,6 @@ export default class DataManager extends Singleton {
     this.spikes = [];
     this.player = null;
     this.enemies = [];
+    this.smokes = [];
   }
 }
