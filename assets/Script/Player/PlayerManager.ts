@@ -1,8 +1,6 @@
 
 import { _decorator, Component, Animation, Node, resources, Sprite, SpriteFrame, UITransform, AnimationClip, animation } from 'cc';
-import { TILE_HEIGHT, TILE_WIDTH } from '../Tile/TileManager';
-import ResourceManager from '../../Runtime/ResourceManager';
-import { CONTROLLER_ENUM, DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM } from '../../Enums';
+import { CONTROLLER_ENUM, DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM, SHAKE_TYPE_ENUM } from '../../Enums';
 import EventManager from '../../Runtime/EventManager';
 import { PlayerStateMachine } from './PlayerStateMachine';
 import { EntityManager } from '../../Base/EntityManager';
@@ -84,14 +82,45 @@ export class PlayerManager extends EntityManager {
 
     const id = this.willAttack(inputDirection);
     if(id){
+      EventManager.Instance.emit(EVENT_ENUM.RECORD_STEP);
+      this.state = ENTITY_STATE_ENUM.ATTACK;
       EventManager.Instance.emit(EVENT_ENUM.ATTACK_ENEMY, id);
       EventManager.Instance.emit(EVENT_ENUM.DOOR_OPEN);
-      // EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END);
+      EventManager.Instance.emit(EVENT_ENUM.PLAYER_MOVE_END);
       return;
     }
 
     if(this.willBlock(inputDirection)){
-      // console.log('block');
+      //碰撞，触发地图震动偏移
+      if(inputDirection === CONTROLLER_ENUM.TOP){
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.TOP);
+      }else if(inputDirection === CONTROLLER_ENUM.BOTTOM){
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM);
+      }else if(inputDirection === CONTROLLER_ENUM.LEFT){
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.LEFT);
+      }else if(inputDirection === CONTROLLER_ENUM.RIGHT){
+        EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.RIGHT);
+      }else if(inputDirection === CONTROLLER_ENUM.TURNLEFT){
+        if(this.direction === DIRECTION_ENUM.TOP){
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.LEFT);
+        }else if(this.direction === DIRECTION_ENUM.LEFT){
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM);
+        }else if(this.direction === DIRECTION_ENUM.BOTTOM){
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.RIGHT);
+        }else if(this.direction === DIRECTION_ENUM.RIGHT){
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.TOP);
+        }
+      }else if(inputDirection === CONTROLLER_ENUM.TURNRIGHT){
+        if(this.direction === DIRECTION_ENUM.TOP){
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.RIGHT);
+        }else if(this.direction === DIRECTION_ENUM.LEFT){
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.TOP);
+        }else if(this.direction === DIRECTION_ENUM.BOTTOM){
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.LEFT);
+        }else if(this.direction === DIRECTION_ENUM.RIGHT){
+          EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM);
+        }
+      }
       return;
     }
 
@@ -99,6 +128,7 @@ export class PlayerManager extends EntityManager {
   }
 
   move(inputDirection: CONTROLLER_ENUM) {
+    EventManager.Instance.emit(EVENT_ENUM.RECORD_STEP);
     if(inputDirection === CONTROLLER_ENUM.TOP){
       this.targetY -= 1;
       this.ismoving = true;
@@ -555,6 +585,12 @@ export class PlayerManager extends EntityManager {
     }
 
     return '';
+  }
+
+  onAttackShake(type: SHAKE_TYPE_ENUM){
+    console.log('onAttackShake');
+    //帧事件函数，攻击震动
+    EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, type);
   }
 
   showSmoke(type: CONTROLLER_ENUM){

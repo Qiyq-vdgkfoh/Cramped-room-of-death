@@ -6,7 +6,7 @@ import { IEntity } from '../../Level';
 import EventManager from '../../Runtime/EventManager';
 import DataManager from '../../Runtime/DataManager';
 import { BurstStateMachine } from './BurstStateMachine';
-import { ENTITY_STATE_ENUM, EVENT_ENUM } from '../../Enums';
+import { ENTITY_STATE_ENUM, EVENT_ENUM, SHAKE_TYPE_ENUM } from '../../Enums';
 import { TILE_HEIGHT, TILE_WIDTH } from '../Tile/TileManager';
 
 
@@ -48,6 +48,7 @@ export class BurstManager extends EntityManager {
       this.state = ENTITY_STATE_ENUM.ATTACK;
     }else if(this.state === ENTITY_STATE_ENUM.ATTACK){
       this.state = ENTITY_STATE_ENUM.DEATH;
+      EventManager.Instance.emit(EVENT_ENUM.SCREEN_SHAKE, SHAKE_TYPE_ENUM.BOTTOM);
       if(this.x === playerX && this.y === playerY){
         EventManager.Instance.emit(EVENT_ENUM.ATTACK_PLAYER, ENTITY_STATE_ENUM.AIRDEATH);
       }

@@ -1,12 +1,14 @@
 import { EnemyManager } from "../Base/EnemyManager";
 import Singleton from "../Base/Singleton";
-import { ITile } from "../Level";
+import { ILevel, ITile } from "../Level";
 import { BurstManager } from "../Script/Burst/BurstManager";
 import { DoorManager } from "../Script/Door/DoorManager";
 import { PlayerManager } from "../Script/Player/PlayerManager";
 import { SmokeManager } from "../Script/Smoke/SmokeManager";
 import { SpikesManager } from "../Script/Spikes/SpikesManager";
 import { TileManager } from "../Script/Tile/TileManager";
+
+export type IRecord = Omit<ILevel, 'mapInfo'>;//记录数据(由ILevel忽略MapInfo字段生成)
 
 //地图数据中心单例
 export default class DataManager extends Singleton {
@@ -23,6 +25,7 @@ export default class DataManager extends Singleton {
   player:PlayerManager;
   enemies: EnemyManager[];
   smokes: SmokeManager[];
+  records: IRecord[];
 
   static get Instance() {
     return super.GetInstance<DataManager>();
@@ -39,5 +42,6 @@ export default class DataManager extends Singleton {
     this.player = null;
     this.enemies = [];
     this.smokes = [];
+    this.records = [];
   }
 }

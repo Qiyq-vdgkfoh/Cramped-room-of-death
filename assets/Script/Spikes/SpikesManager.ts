@@ -17,7 +17,7 @@ export class SpikesManager extends Component {
   id: string = randomByLen(12);
   x: number = 0;
   y: number = 0;
-  private type: ENTITY_TYPE_ENUM;
+  type: ENTITY_TYPE_ENUM;
   fsm:StateMachine;
 
   private _count: number;

@@ -23,6 +23,11 @@ export enum EVENT_ENUM {
   ATTACK_ENEMY = "ATTACK_ENEMY",
   DOOR_OPEN = "DOOR_OPEN",
   SHOW_SMOKE = "SHOW_SMOKE",
+  SCREEN_SHAKE = "SCREEN_SHAKE",
+  RECORD_STEP = "RECORD_STEP",
+  REVOKE_STEP = "REVOKE_STEP",
+  RESTART_LEVEL = "RESTART_LEVEL",
+  OUT_BATTLE = "OUT_BATTLE",
 }
 
 //控制按钮类型
@@ -125,4 +130,18 @@ export enum SPIKES_COUNT_MAP_NUMBER_ENUM {
   THREE = 3,
   FOUR = 4,
   FIVE = 5,
+}
+
+
+export enum SHAKE_TYPE_ENUM {
+  TOP = 'TOP',
+  BOTTOM = 'BOTTOM',
+  LEFT = 'LEFT',
+  RIGHT = 'RIGHT',
+}
+
+export enum SCENE_ENUM {
+  Loading = 'Loading',
+  Start = 'Start',
+  Battle = 'Battle'
 }

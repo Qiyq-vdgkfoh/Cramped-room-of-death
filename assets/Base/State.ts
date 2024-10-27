@@ -18,7 +18,8 @@ export default class State {
     private fsm:StateMachine,
     private path:string,
     private wrapMode: AnimationClip.WrapMode = AnimationClip.WrapMode.Normal,
-    private speed: number = ANIMATION_SPEED
+    private speed: number = ANIMATION_SPEED,
+    private events: any[] = [],//帧事件 [{frame:number第几帧触发,func:()=>{}回调函数,params:any[]参数}]
   ) {
     this.init();
   }
@@ -35,10 +36,15 @@ export default class State {
     const frames: Array<[number, SpriteFrame]> = sortSpriteFrame(spriteFrames).map((item, index) => [this.speed * index, item]);//创建动画帧数据
     track.channel.curve.assignSorted(frames);//指定轨道的帧数据
 
+    for (const event of this.events) {
+      this.animationClip.events.push(event);//添加帧事件
+    }
     this.animationClip.addTrack(track);//将轨道添加到动画剪辑中
     this.animationClip.name = this.path;//设置动画剪辑的名称
     this.animationClip.duration = frames.length * ANIMATION_SPEED;//整个动画剪辑的周期
     this.animationClip.wrapMode = this.wrapMode;//设置动画播放的循环模式
+
+
 
   }
 

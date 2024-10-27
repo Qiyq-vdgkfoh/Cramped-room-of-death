@@ -2,6 +2,7 @@ import { _decorator, BlockInputEvents, Color, Component, Event, game, Graphics, 
 
 const { ccclass, property } = _decorator;
 
+//屏幕宽高
 const SCREEN_WIDTH = view.getVisibleSize().width;
 const SCREEN_HEIGHT = view.getVisibleSize().height;
 
@@ -11,8 +12,9 @@ enum FADE_STATE_ENUM{
   FADE_OUT = 'FADE_OUT',
 }
 
-export const DEFAULT_DURATION = 2000; // 2秒
+export const DEFAULT_DURATION = 1000; //阴影渐入渐出默认时间1秒
 
+//阴影渐入渐出绘画
 @ccclass('DrawManager')
 export class DrawManager extends Component {
 
@@ -35,7 +37,7 @@ export class DrawManager extends Component {
 
   setAlpha(percent: number){
     this.ctx.clear();
-    this.ctx.rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT*1.5);
+    this.ctx.rect(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH);
     this.ctx.fillColor = new Color(0, 0, 0, percent*255);
     this.ctx.fill();
     this.block.enabled = percent === 1;
@@ -82,6 +84,13 @@ export class DrawManager extends Component {
     this.state = FADE_STATE_ENUM.FADE_OUT;
     return new Promise((resolve) => {
       this.fadeResolve = resolve;
+    })
+  }
+
+  mask(){
+    this.setAlpha(1);
+    return new Promise((resolve) => {
+      setTimeout(resolve, DEFAULT_DURATION);
     })
   }
 }
